@@ -1,4 +1,5 @@
 :root {
+    /* Tông màu từ Code 2 */
     --purple-bg: #8c7ae6; 
     --dark-purple-sidebar: #523f9b; 
     --cover-purple: #523f9b; 
@@ -21,6 +22,7 @@ body {
     color: var(--text-color);
 }
 
+/* --- SIDEBAR (Code 2) --- */
 .container-sidebar {
     width: 250px; 
     background: var(--dark-purple-sidebar);
@@ -100,6 +102,7 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* --- BOOK CONTAINER (Code 2) --- */
 .container-wrap-content {
     flex: 1;
     position: relative;
@@ -115,7 +118,7 @@ body {
     perspective: 2500px;
     position: relative;
     display: flex;
-    justify-content: flex-start; 
+    justify-content: center; 
     align-items: center;
     gap: 0px; 
 }
@@ -128,7 +131,6 @@ body {
     transform-style: preserve-3d;
     transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), z-index 0.5s;
     border-radius: 12px; 
-    box-shadow: var(--shadow-soft); 
 }
 
 .flipped {
@@ -143,7 +145,7 @@ body {
     backface-visibility: hidden;
     padding: 30px;
     box-sizing: border-box;
-    overflow: hidden; 
+    overflow: auto; /* Cho phép cuộn nội dung */
     border-radius: 12px;
     background: var(--paper-color); 
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
@@ -153,6 +155,8 @@ body {
     transform: rotateY(180deg);
     background: var(--paper-color);
 }
+
+/* Style cho bìa (Code 2) */
 .book-cover {
     background: var(--cover-purple); 
     color: white;
@@ -202,6 +206,8 @@ body {
 .cover-start-btn:hover {
     transform: translateY(-2px);
 }
+
+/* Các layout block (từ code 2, dành cho trang mẫu trong ảnh) */
 .layout-container {
     height: 100%;
     display: flex;
@@ -240,6 +246,7 @@ body {
 .dot.active {background: #777;}
 
 
+/* --- Nút điều hướng (Code 2) --- */
 #prev-page-btn,
 #next-page-btn {
     position: absolute;
@@ -272,7 +279,7 @@ body {
 #prev-page-btn:hover,
 #next-page-btn:hover {background: #eee;}
 
-
+/* --- FLOATING MENU (Code 2) --- */
 #toggle-toolbar-menu { 
     position: fixed; 
     top: 20px;
@@ -290,6 +297,18 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+#music-toggle { /* Điều chỉnh nút nhạc */
+    color: var(--dark-purple-sidebar) !important;
+    right: 80px !important;
+    background: white !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -372,6 +391,10 @@ body {
     cursor: pointer;
     transition: background 0.2s;
 }
+.menu-group.align-buttons button:nth-child(4) { /* Căn Đủ */
+    margin-top: 10px;
+    flex-basis: 100%;
+}
 
 .menu-group.align-buttons button.active-align {
     background: #007bff;
@@ -399,10 +422,44 @@ body {
     color: white;
 }
 
+.paper [contenteditable="true"] {
+    outline: none; /* Bỏ viền focus mặc định */
+}
+
 /* Thêm styling cho ảnh được chèn (tùy chọn) */
 .paper img {
     max-width: 100%;
     height: auto;
     border-radius: 6px;
     margin: 10px 0;
+}
+
+/* --- Responsive cho điện thoại (Code 2) --- */
+@media (max-width: 1024px) {
+    .container-sidebar {
+        width: 80px;
+    }
+    .side-bar a span {
+        display: none;
+    }
+    .sidebar-header .link-integrations,
+    .sidebar-header > div:not(.eirlys-logo) {
+        display: none;
+    }
+    .container-wrap-content {
+        padding-left: 80px;
+    }
+    .book {
+        width: 400px; /* Sổ đơn trang */
+    }
+    .paper {
+        width: 100%;
+        height: 90%;
+    }
+    .nav-btn.left-btn {
+        left: calc(80px + 10px); 
+    }
+    .nav-btn.right-btn {
+        right: 10px; 
+    }
 }

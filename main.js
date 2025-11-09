@@ -9,10 +9,13 @@ const addPagePanelBtn = document.getElementById('add-page-panel-btn');
 
 const insertImageBtn = document.getElementById('insert-image-btn');
 const imageUploadInput = document.getElementById('image-upload-input');
+const musicToggle = document.getElementById('music-toggle');
+const bgMusic = document.getElementById('bgMusic');
 
 let pages = [], currentPage = 0;
 let savedRange = null;
 
+// Các Layout mẫu (Code 2)
 const Layouts = {
     COVER: `
         <div class="front book-cover">
@@ -25,22 +28,6 @@ const Layouts = {
     `,
     
     PAGE_1_LAYOUT: `
-        <div class="front layout-container layout-front-1">
-            <div class="block-top"></div>
-            <div class="block-main">Frame 41</div>
-            <div class="footer-dots"><div class="dot active"></div><div class="dot"></div></div>
-        </div>
-        <div class="back layout-container layout-back-1">
-            <div class="block-top-group">
-                <div class="block-left"></div>
-                <div class="block-right"></div>
-            </div>
-            <div class="block-bottom"></div>
-            <div class="footer-dots"><div class="dot"></div><div class="dot active"></div></div>
-        </div>
-    `,
-
-    PAGE_2_LAYOUT: `
         <div class="front layout-container layout-front-2">
             <div class="block-top"></div>
             <div class="block-mid-group">
@@ -62,12 +49,33 @@ const Layouts = {
     `,
     
     PAGE_BLANK: `
-        <div class="front"></div>
-        <div class="back"></div>
+        <div class="front content"></div>
+        <div class="back content"></div>
     `
 };
 
+// --- CHỨC NĂNG LƯU/KHÔI PHỤC CON TRỎ (QUAN TRỌNG CHO VIỆC CHÈN ẢNH) ---
+function saveSelection() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        // Đảm bảo chỉ lưu range nếu nó nằm trong một vùng contenteditable
+        const container = range.commonAncestorContainer.closest('[contenteditable="true"]');
+        if (container) {
+            savedRange = range.cloneRange();
+        }
+    }
+}
 
+function restoreSelection() {
+    if (savedRange) {
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(savedRange);
+    }
+}
+
+// --- CHỨC NĂNG TẠO/THÊM TRANG ---
 function createPage(contentTemplate, isEditable = true) {
     const page = document.createElement('div');
     page.className = 'paper';
@@ -86,36 +94,20 @@ function createPage(contentTemplate, isEditable = true) {
     return page;
 }
 
-function saveSelection() {
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const container = range.commonAncestorContainer.closest('[contenteditable="true"]');
-        if (container) {
-            savedRange = range;
-        }
-    }
-}
-
-function restoreSelection() {
-    if (savedRange) {
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(savedRange);
-    }
-}
-
 function addNewPage() {
+    // Luôn đảm bảo có trang cuối cùng không lật để che phía sau
     const lastPage = pages.pop();
     if (lastPage) {
         book.removeChild(lastPage);
     }
     
+    // Thêm trang mới có thể chỉnh sửa
     createPage(Layouts.PAGE_BLANK, true);
 
+    // Thêm lại trang cuối cùng không lật
     createPage(Layouts.PAGE_BLANK, false); 
     
-    currentPage = pages.length - 2; 
+    currentPage = pages.length - 2; // Lùi về trang vừa thêm
     updatePages();
 }
 
@@ -134,51 +126,8 @@ function updatePages() {
     nextBtn.disabled = currentPage === pages.length - 1;
 }
 
-prevBtn.addEventListener('click', () => {
-    if (currentPage > 0) currentPage--;
-    updatePages();
-});
 
-nextBtn.addEventListener('click', () => {
-    if (currentPage < pages.length - 1) currentPage++;
-    updatePages();
-});
-
-addPageSidebarBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    addNewPage();
-});
-
-function initBook() {
-    book.innerHTML = '';
-    pages = [];
-    currentPage = 0;
-
-    createPage(Layouts.COVER, false);
-    
-    createPage(Layouts.PAGE_1_LAYOUT, true);
-
-    createPage(Layouts.PAGE_2_LAYOUT, true);
-
-    createPage(Layouts.PAGE_BLANK, false);
-
-    updatePages();
-    
-    const startBtn = document.getElementById('start-btn');
-    if (startBtn) {
-        startBtn.addEventListener('click', () => {
-            currentPage = 1; 
-            updatePages();
-        });
-    }
-}
-
-toggleToolbarMenu.addEventListener('click', () => {
-    floatingMenu.classList.toggle('show');
-});
-
-addPagePanelBtn.addEventListener('click', addNewPage);
-
+// --- CHỨC NĂNG CÔNG CỤ CHỈNH SỬA ---
 floatingMenu.querySelectorAll('button[data-cmd]').forEach(btn => {
     btn.addEventListener('click', () => {
         restoreSelection();
@@ -187,6 +136,7 @@ floatingMenu.querySelectorAll('button[data-cmd]').forEach(btn => {
             const url = prompt("Nhập URL:");
             if (url) document.execCommand(cmd, false, url);
         } else if (cmd.startsWith('justify')) {
+            // Cập nhật trạng thái active cho nút căn lề
             floatingMenu.querySelectorAll('.align-buttons .align-btn').forEach(b => b.classList.remove('active-align'));
             btn.classList.add('active-align');
             document.execCommand(cmd, false, null);
@@ -203,6 +153,7 @@ document.getElementById('font-family').addEventListener('change', e => {
 
 document.getElementById('font-size').addEventListener('change', e => {
     restoreSelection();
+    // Chuyển size: 14px -> 3, 16px -> 4, 18px -> 5, 24px -> 6 (Do execCommand chỉ chấp nhận size 1-7)
     let sizeValue = '4';
     switch(e.target.value) {
         case '14px': sizeValue = '3'; break; 
@@ -217,8 +168,7 @@ document.getElementById('color').addEventListener('change', e => {
     document.execCommand('foreColor', false, e.target.value);
 });
 
-
-// --- Logic Thêm Ảnh MỚI ---
+// --- LOGIC TẢI ẢNH LÊN ---
 insertImageBtn.addEventListener('click', () => {
     imageUploadInput.click();
 });
@@ -230,7 +180,7 @@ imageUploadInput.addEventListener('change', function(event) {
 
         reader.onload = function(e) {
             restoreSelection(); 
-            if (savedRange) {
+            if (savedRange && savedRange.commonAncestorContainer.closest('[contenteditable="true"]')) {
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.alt = 'Uploaded Image';
@@ -257,8 +207,63 @@ imageUploadInput.addEventListener('change', function(event) {
 
         reader.readAsDataURL(file);
     }
-    // Xóa giá trị input để có thể tải cùng 1 file ảnh nhiều lần
     event.target.value = ''; 
 });
+
+// --- KHỞI TẠO VÀ SỰ KIỆN CHUNG ---
+prevBtn.addEventListener('click', () => {
+    if (currentPage > 0) currentPage--;
+    updatePages();
+});
+
+nextBtn.addEventListener('click', () => {
+    if (currentPage < pages.length - 1) currentPage++;
+    updatePages();
+});
+
+addPageSidebarBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    addNewPage();
+});
+
+addPagePanelBtn.addEventListener('click', addNewPage);
+
+toggleToolbarMenu.addEventListener('click', () => {
+    floatingMenu.classList.toggle('show');
+});
+
+musicToggle.addEventListener('click', () => {
+    if (bgMusic.paused) { bgMusic.play(); musicToggle.textContent = '🔊'; }
+    else { bgMusic.pause(); musicToggle.textContent = '🔇'; }
+});
+
+
+function initBook() {
+    book.innerHTML = '';
+    pages = [];
+    currentPage = 0;
+
+    // Bìa
+    createPage(Layouts.COVER, false);
+    
+    // Trang mẫu 1
+    createPage(Layouts.PAGE_1_LAYOUT, true);
+
+    // Thêm trang trắng có thể chỉnh sửa
+    createPage(Layouts.PAGE_BLANK, true);
+
+    // Trang cuối cùng (không lật)
+    createPage(Layouts.PAGE_BLANK, false);
+
+    updatePages();
+    
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            currentPage = 1; 
+            updatePages();
+        });
+    }
+}
 
 initBook();
