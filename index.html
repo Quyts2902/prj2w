@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Cloud</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="container-sidebar">
+        <div class="side-bar">
+            <div class="sidebar-header">
+                <div class="eirlys-logo">Eirlys</div>
+                NoteCloud
+                <div class="link-integrations">Link Integrations 🦊🔥</div>
+            </div>
+            
+            <div class="main-menu">
+                <a href="index.html" class="side-item active-nav" title="Trang Chủ">
+                    <i class="fas fa-home"></i> Trang Chủ
+                </a>
+                <a href="#" class="side-item" title="Đánh Giá">
+                    <i class="fas fa-file-invoice"></i> Đánh giá
+                </a>
+                <a href="#" class="side-item" title="Cấu chuyện">
+                    <i class="fas fa-book"></i> Câu chuyện
+                </a>
+                <a href="#" class="side-item" id="add-page-sidebar-btn" title="Thêm trang">
+                    <i class="fas fa-plus"></i> Thêm trang 
+                </a>
+            </div>
+
+            <div class="bottom-menu">
+                <a href="#" class="side-item" title="Công cụ">
+                    <i class="fas fa-tools"></i> Công cụ
+                </a>
+                <a href="#" class="side-item" title="Trợ giúp">
+                    <i class="fas fa-question-circle"></i> Trợ giúp
+                </a>
+            </div>
+        </div>
+    </div>
+
+<div class="container-wrap-content">
+    <button id="prev-page-btn" class="nav-btn left-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="book" id="book"></div>
+    <button id="next-page-btn" class="nav-btn right-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+</div>
+
+<button id="toggle-toolbar-menu">
+    <i class="fas fa-bars"></i>
+</button>
+
+<div id="floating-menu">
+    <div class="menu-group style-buttons">
+        <button data-cmd="bold">B</button>
+        <button data-cmd="italic">I</button>
+        <button data-cmd="underline">U</button>
+    </div>
+    
+    <div class="menu-group select-row">
+        <select id="font-family">
+            <option value="Inter, sans-serif">Inter</option>
+            <option value="Nunito, sans-serif">Nunito</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Pacifico, cursive">Handwriting</option>
+        </select>
+        <select id="font-size">
+            <option value="16px">Normal</option>
+            <option value="14px">Small</option>
+            <option value="18px">Medium</option>
+            <option value="24px">Large</option>
+        </select>
+    </div>
+    
+    <div class="menu-group color-row">
+        <label for="color">Màu chữ:</label>
+        <input type="color" id="color" value="#2c2c2c">
+    </div>
+
+    <div class="menu-group align-buttons">
+        <button data-cmd="justifyLeft" class="align-btn active-align">Căn Trái</button>
+        <button data-cmd="justifyCenter" class="align-btn">Căn Giữa</button>
+        <button data-cmd="justifyRight" class="align-btn">Căn Phải</button>
+    </div>
+
+    <div class="menu-group action-buttons">
+        <button id="insert-image-btn" class="action-btn link-button">
+            <i class="fas fa-image"></i> Thêm ảnh
+        </button>
+        <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
+        
+        <button data-cmd="createLink" class="action-btn link-button">🔗 Thêm Liên kết</button>
+        <button id="add-page-panel-btn" class="action-btn add-page-button">➕ Thêm trang mới</button>
+    </div>
+</div>
+
+<audio id="bgMusic" loop autoplay>
+    <source src="có hẹn với thanh xuân - MONSTAR _ official music video.mp3" type="audio/mpeg">
+</audio>
+</body>
+</html>
